@@ -1,6 +1,12 @@
 #!/usr/bin/perl
+
+#
+#   Author: <wexe1@protonmail.com>
+#   License: MIt
+#
+
 use strict;
-use warnings;
+#use warnings;
 use Getopt::Std;
 
 our(
@@ -10,7 +16,8 @@ our(
     $opt_x, # exclude matches
     $opt_b, # begins with match
     $opt_e, # ends with match
-    $opt_h  # help
+    $opt_h, # help
+    $opt_c, # count
 );
 
 my (@data, @output);
@@ -37,6 +44,7 @@ sub usage {
     $usage .= "  -x\t\texclude matched lines\n";
     $usage .= "  -b\t\tprint everything below the first matched line\n";
     $usage .= "  -e\t\tprint everything above the first matched line\n";
+    $usage .= "  -c <number>\tmax lines to print (at least 1)\n";
     $usage .= "  -h\t\tprint this help and exit\n";
     $usage .= "\nexamples:\n\n";
     $usage .= "\$ ifconfig | $0 -p '(([a-z0-9]{2}):?){6}'\n";
@@ -45,10 +53,12 @@ sub usage {
     return $usage;
 }
 
-getopts('p:f:ixbeh');
+getopts('p:f:ixbehc:');
 
 die &usage() unless $opt_p;
 die &usage() if $opt_h;
+die &usage() if defined($opt_c) && $opt_c =~ /[^0-9]/;
+die &usage() if defined($opt_c) && $opt_c < 1;
 
 my $pattern = $opt_p;
 
@@ -84,12 +94,19 @@ if ($opt_x) {
             last;
         }
     }
+    if ($opt_c) {
+        @output = @output[$#output - $opt_c + 1..$#output];
+    }
 } else {
     foreach my $s (@data) {
         if (&matches($pattern, $s, $opt_i)) {
             push @output, $s;
         }
     }
+}
+
+if ($opt_c && !$opt_e) {
+    @output = @output[0..$opt_c - 1];
 }
 
 print join('', @output);
