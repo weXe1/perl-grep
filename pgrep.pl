@@ -2,7 +2,7 @@
 
 #
 #   Author: <wexe1@protonmail.com>
-#   License: MIt
+#   License: MIT
 #
 
 use strict;
@@ -36,7 +36,7 @@ sub matches {
 
 sub usage {
     my $usage = "usage:\n";
-    $usage .= "\$ perl $0 -p <pattern> [-i] [-f <filename>] [-x|-b|-e]\n";
+    $usage .= "\$ perl $0 -p <pattern> [-i] [-f <filename>] [-x|-b|-e] [-c <number>]\n";
     $usage .= "\noptions:\n\n";
     $usage .= "  -p <pattern>\tregex pattern to search for\n";
     $usage .= "  -i\t\tignore case\n";
